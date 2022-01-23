@@ -6,6 +6,11 @@ import time, json, os
 import numpy as np
 import asyncio
 import logic
+import sys
+
+# get the start input
+try: st = int(sys.argv[1])
+except: st = None
 
 # clear the terminal
 os.system("cls")
@@ -31,9 +36,9 @@ for file in os.listdir(root):
         urls.remove(url)
         index.remove(i)
 
-x, R = af.batchers(urls,80)
+x, R = af.batchers(urls,100)
 print(f"{len(urls)} data will be devided into {R} batch")
-for r in range(0,R):
+for r in range(st,R):
     print(f">> batch{r:04d}", end=" ")
     try:
         start = time.time()
