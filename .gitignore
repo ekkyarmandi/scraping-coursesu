@@ -1,0 +1,5 @@
+*.ipynb
+data/
+urls/
+__pycache__/
+collect_urls.py
