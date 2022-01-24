@@ -10,7 +10,7 @@ import sys
 
 # get the start input
 try: st = int(sys.argv[1])
-except: st = None
+except: st = 0
 
 # clear the terminal
 os.system("cls")
@@ -23,20 +23,18 @@ speed = []
 
 # read all the product urls
 urls = json.load(open("./urls/product_urls.json"))
+scraped = json.load(open("./urls/scraped_urls.json"))
 urls = list(dict.fromkeys(urls))
 
 # iterate the scraping process in batches
 index = list(range(0,len(urls)))
 
 # filter the scraped urls
-for file in os.listdir(root):
-    if file.endswith("json"):
-        i = int(file.replace(".json",""))
-        url = json.load(open(root+file))['url']
-        urls.remove(url)
-        index.remove(i)
+for i in scraped:
+    urls.remove(scraped[i])
+    index.remove(int(i))
 
-x, R = af.batchers(urls,100)
+x, R = af.batchers(urls,80)
 print(f"{len(urls)} data will be devided into {R} batch")
 for r in range(st,R):
     print(f">> batch{r:04d}", end=" ")
