@@ -1,6 +1,5 @@
 # import search_barcode as sb
 import asyncio, aiohttp
-
 from math import ceil
 
 # ignore event loop policy warnings
