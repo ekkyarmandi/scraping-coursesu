@@ -44,12 +44,15 @@ def scraper(src_url,html):
             break
 
     # find product ingredients and calories
-    product_informations = {}
-    informations = page.find("div",{"class":"main-information-content"})
-    for info in informations.find_all("h3"):
-        title = info.get_text().strip().lower().replace(" ","_")
-        text = info.find_next("p").get_text().strip()
-        product_informations.update({title:text})
+    try:
+        product_informations = {}
+        informations = page.find("div",{"class":"main-information-content"})
+        for info in informations.find_all("h3"):
+            title = info.get_text().strip().lower().replace(" ","_")
+            text = info.find_next("p").get_text().strip()
+            product_informations.update({title:text})
+    except:
+        product_informations = None
         
     try:
         ingredients = product_informations['ingrédients']
@@ -62,7 +65,7 @@ def scraper(src_url,html):
         nutritions = [n.strip() for n in nutritions.split(",") if "kcal" in n]
         if len(nutritions) > 0:
             calories = ", ".join(nutritions)
-    except: pass
+    except: calories = None
 
     # find product calories from table
     try:
@@ -84,17 +87,20 @@ def scraper(src_url,html):
         calories = None
 
     # find product origin through further more information
-    further_informations = {}
-    context = {
-        "class": "toggle-information-content",
-        "data-togglecontent": "Further Information"
-    }
-    informations = page.find("div",context)
-    for info in informations.find_all("h3"):
-        title = info.get_text().strip().lower().replace(" ","_")
-        text = info.find_next("div").get_text().strip()
-        further_informations.update({title:text})
-        
+    try:
+        further_informations = {}
+        context = {
+            "class": "toggle-information-content",
+            "data-togglecontent": "Further Information"
+        }
+        informations = page.find("div",context)
+        for info in informations.find_all("h3"):
+            title = info.get_text().strip().lower().replace(" ","_")
+            text = info.find_next("div").get_text().strip()
+            further_informations.update({title:text})
+    except:
+        further_informations = None
+            
     try:
         origin_info = further_informations['informations_complémentaires']
         origin_info = re.sub("\s+"," ",origin_info).strip()
@@ -112,7 +118,10 @@ def scraper(src_url,html):
         "manufactured_at": origin_info,
         "code": None
     }
-    return product_data
+    if len([v for v in product_data.values() if v == None]) != 9:
+        return product_data
+    else:
+        return None
 
 if __name__ == '__main__':
 

@@ -4,9 +4,21 @@ import asyncfunctions as af
 import command as printer
 import time, json, os
 import numpy as np
+import requests
 import asyncio
 import logic
 import sys
+
+def manual(index,urls):
+    for i, url in zip(index,urls):
+        try:
+            req = requests.get(url,headers=logic.headers)
+            result = logic.scraper(url,req.content)
+            if result != None:
+                dest_file = root + f"{i:06d}.json"
+                if not os.path.exists(dest_file):
+                    json.dump(result,open(dest_file,"w"))
+        except: pass
 
 # get the start input
 try: st = int(sys.argv[1])
@@ -47,6 +59,7 @@ for r in range(st,R):
                 dest_file = root + f"{i:06d}.json"
                 if not os.path.exists(dest_file):
                     json.dump(result,open(dest_file,"w"))
+        # manual(index[a:b],urls[a:b])
         end = time.time()
         speed.append(time.time()-start)
         est = af.sec2hms(int(np.mean(speed)*(R-r)))
